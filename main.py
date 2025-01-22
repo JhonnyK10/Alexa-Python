@@ -5,12 +5,11 @@ import webbrowser
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
+engine.setProperty('voice', voices[1].id)
 
 def speak(text):
     engine.say(text)
     engine.runAndWait()
-
 
 def recognize_speech():
     r = sr.Recognizer()
@@ -29,14 +28,12 @@ def recognize_speech():
         return "None"
     return query
 
-
 def create_todo_list():
     speak('What do you want to add in your task list?')
     task = recognize_speech()
     with open('todo.txt', 'a') as f:
         f.write(f'{datetime.datetime.now()} - {task}\n')
     speak('Task added to your list.') 
-
 
 def search_web():
     speak('What do you want me to search?')
@@ -45,9 +42,16 @@ def search_web():
     webbrowser.open(url)
     speak(f'Here are some results of {query}.')
 
+def tell_time():
+    current_time = datetime.datetime.now().strftime('%H:%M')
+    speak(f'The time is {current_time}.')
+
+def tell_date():
+    today = datetime.datetime.now().strftime('%A, %d %B %Y')
+    speak(f'Today is {today}.')
 
 def main():
-    speak('Hello! I am your personal assistence. How can I help you today?')
+    speak('Hello! I am your personal assistance. How can I help you today?')
     while True:
         query = recognize_speech().lower()
 
@@ -57,9 +61,16 @@ def main():
         elif 'search on the web' in query:
             search_web()
 
+        elif 'tell me the time' in query:
+            tell_time()
+
+        elif 'tell me the date' in query:
+            tell_date()
+
         elif 'stop' in query:
             speak('Good bye! See you soon!')
             break
         else:
             speak('Sorry, I did not understand. Can you repeat please?')
+
 main()
